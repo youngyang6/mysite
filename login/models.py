@@ -32,4 +32,14 @@ class Project(models.Model):
         return self.name
 
 class Case(models.Model):
-    
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    casenumber = models.CharField(max_length=128,unique=True)
+    casename = models.CharField(max_length=256,unique=True)
+    precondition = models.CharField(max_length=512)
+    step = models.CharField(max_length=512,unique=True)
+    expectresults = models.CharField(max_length=512,unique=True)
+    createtime = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.casename
