@@ -32,8 +32,8 @@ class Project(models.Model):
         return self.name
 
 class Case(models.Model):
-    user = models.ForeignKey(User)
-    project = models.ForeignKey(Project)
+    user = models.ForeignKey('User',on_delete=models.PROTECT)
+    project = models.ForeignKey('Project',on_delete=models.PROTECT)
     casenumber = models.CharField(max_length=128,unique=True)
     casename = models.CharField(max_length=256,unique=True)
     precondition = models.CharField(max_length=512)
