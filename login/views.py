@@ -27,7 +27,8 @@ def login(request):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
-                    return redirect("/index/")
+                    case_list = Case.objects.filter(user_id=user.id)
+                    return render(request,'login/index.html',{"cases":case_list})
                 else:
                     message = "密码不正确"
             except:
@@ -36,15 +37,13 @@ def login(request):
     login_form = UserForm()
     return render(request, 'login/login.html', locals())
 
-def case_manage(request):
-    username = request.session.get('user_name')
-    case_list = Case.objects.filter(user=username)
-    return render(request,"case_manage.html",{"case":case_list})
-
 def register(request):
     pass
     return render(request,'login/register.html')
 
+def create_case(request):
+    user = request.session.get('user_name','')
+    return render(request,'login/create_case.html',{"user":user})
 
 def logout(request):
     if not request.session.get('is_login',None):
