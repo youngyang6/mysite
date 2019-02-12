@@ -3,14 +3,14 @@
 {% block content %}
   <div class="page-header" style="padding-top: 0px;">
     <div id="navbar" class="navbar-collapse collapse">
-      <form class="navbar-form" method="get" action="/create_case/">
+      <form class="navbar-form" method="post" action="/create_case/">{% csrf_token %}
         <button type="submit" class="btn btn-success">新增用例</button>
       </form>
     </div>
   </div>
   <div class="row" style="padding-top: 20px;">
     <div class="col-md-12">
-      <table class="table">
+      <table class="table table-bordered table-hover">
         <thead>
           <tr>
             <th width=10%>用例编码</th><th width=20%>用例名称</th><th width=20%>预置条件</th><th width=20%>执行步骤</th><th>预期结果</th><th width=10%>创建时间</th>

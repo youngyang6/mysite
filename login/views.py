@@ -2,15 +2,16 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import auth
 from .models import User,Project,Case
-from .forms import UserForm
+from .forms import UserForm,CreateForm
 #from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 #@login_required
 def index(request):
-    pass
-    return render(request,'login/index.html')
+    user = request.session.get('user_name','')
+    case_list = Case.objects.filter(user_id=User.objects.get(name=user))
+    return render(request,'login/index.html',{"cases":case_list})
 
 
 def login(request):
@@ -27,8 +28,7 @@ def login(request):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
-                    case_list = Case.objects.filter(user_id=user.id)
-                    return render(request,'login/index.html',{"cases":case_list})
+                    return redirect("/index/")
                 else:
                     message = "密码不正确"
             except:
@@ -42,8 +42,31 @@ def register(request):
     return render(request,'login/register.html')
 
 def create_case(request):
-    user = request.session.get('user_name','')
-    return render(request,'login/create_case.html',{"user":user})
+    #user = request.session.get('user_name','')
+    if request.method == "POST":
+        create_form = CreateForm(request.POST)
+        if create_form.is_valid():
+            user = create_form.cleaned_data['user']
+            project = create_form.cleaned_data['project']
+            casenumber = create_form.cleaned_data['casenumber']
+            casename = create_form.cleaned_data['casename']
+            precondition = create_form.cleaned_data['precondition']
+            step = create_form.cleaned_data['step']
+            expectresults = create_form.cleaned_data['expectresults']
+
+            new_case = Case()
+            new_case.user = User.objects.get(name=user)
+            new_case.project = Project.objects.get(name=project)
+            new_case.casenumber = casenumber
+            new_case.casename = casename
+            new_case.precondition = precondition
+            new_case.step = step
+            new_case.expectresults = expectresults
+            new_case.save()
+            return redirect('/index/')
+    create_form = CreateForm(request.POST)
+    return render(request,'login/create_case.html',locals())
+
 
 def logout(request):
     if not request.session.get('is_login',None):
